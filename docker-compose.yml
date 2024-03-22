@@ -5,7 +5,8 @@ services:
   terasim:
     container_name: terasim
     restart: always
-    network_mode: terasim-bridge
+    networks:
+      - terasim-bridge
     image: "michigantrafficlab/mcity_av_challenge:terasim"
     volumes:
       - ./data:/app/Driving-Intelligence-Test/output
@@ -15,16 +16,17 @@ services:
   avalgo:
     container_name: avalgo
     restart: always
-    network_mode: terasim-bridge
+    networks:
+      - terasim-bridge
     image: "michigantrafficlab/mcity_av_challenge:simpleav"
     depends_on:
       - terasim
     environment:
       - TERASIM_REDIS_HOST=terasim
       - TERASIM_REDIS_PORT=6379
-      - TERASIM_REDIS_PASSWORD="communication"
-
+      - TERASIM_REDIS_PASSWORD=mcityavchallenge
 
 networks:
   terasim-bridge:
+    name: terasim-bridge
     driver: bridge
