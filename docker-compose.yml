@@ -2,12 +2,12 @@ version: '3.5'
 
 services:
 
-  terasim:
-    container_name: terasim
+  test_env_a:
+    container_name: test_env_a
     restart: always
     networks:
       - terasim-bridge
-    image: "michigantrafficlab/mcity_av_challenge:terasim"
+    image: "michigantrafficlab/mcity_av_challenge:test_env_a"
     volumes:
       - ./data:/app/Driving-Intelligence-Test/output
     ports:
@@ -20,9 +20,9 @@ services:
       - terasim-bridge
     image: "michigantrafficlab/mcity_av_challenge:simpleav"
     depends_on:
-      - terasim
+      - test_env_a
     environment:
-      - TERASIM_REDIS_HOST=terasim
+      - TERASIM_REDIS_HOST=test_env_a
       - TERASIM_REDIS_PORT=6379
       - TERASIM_REDIS_PASSWORD=mcityavchallenge
 
