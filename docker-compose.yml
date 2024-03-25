@@ -9,7 +9,7 @@ services:
       - terasim-bridge
     image: "michigantrafficlab/mcity_av_challenge:test_env_a"
     volumes:
-      - ./data:/app/Driving-Intelligence-Test/output
+      - ./trajectory_data:/app/Driving-Intelligence-Test/output
     ports:
       - "6379:6379"
 
@@ -18,7 +18,10 @@ services:
     restart: always
     networks:
       - terasim-bridge
-    image: "michigantrafficlab/mcity_av_challenge:simpleav"
+    image: "michigantrafficlab/mcity_av_challenge:baseline_av"
+    volumes:
+      - ./trajectory_data:/app/trajectory_data
+      - ./trajectory_videos:/app/trajectory_videos
     depends_on:
       - test_env_a
     environment:
