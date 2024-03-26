@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+
+  test_env_a:
+    container_name: test_env_a
+    restart: always
+    networks:
+      - terasim-bridge
+    image: "michigantrafficlab/mcity_av_challenge:test_env_a"
+    volumes:
+      - ./output/trajectory_data:/app/Driving-Intelligence-Test/output
+    ports:
+      - "6379:6379"
+
+  avalgo:
+    container_name: avalgo
+    restart: always
+    networks:
+      - terasim-bridge
+    image: "michigantrafficlab/mcity_av_challenge:baseline_av"
+    volumes:
+      - ./av_decision_making_module:/app/av_decision_making_module
+      - ./output/trajectory_data:/app/output/trajectory_data
+      - ./output/trajectory_videos:/app/output/trajectory_videos
+    depends_on:
+      - test_env_a
+    environment:
+      - TERASIM_REDIS_HOST=test_env_a
+      - TERASIM_REDIS_PORT=6379
+      - TERASIM_REDIS_PASSWORD=mcityavchallenge
+
+networks:
+  terasim-bridge:
+    name: terasim-bridge
+    driver: bridge
