@@ -13,9 +13,11 @@ docker compose -f docker-compose-development.yml up -d
 For detailed instructions, please refer to [this website](https://southern-property-d0c.notion.site/User-Manual-8cfa6e765bdf4475ac8555fd23b4f11e).
 
 ## Developers
-Mcity
-
 Michigan Traffic Lab
 
+Mcity
+
 ## Contact
+Michigan Traffic Lab
+
 Mcity
