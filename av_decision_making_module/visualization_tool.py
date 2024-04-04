@@ -1,3 +1,4 @@
+import argparse
 import glob
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -35,7 +36,7 @@ def make_video(net_file_path, traj_file_path, output_folder):
         else:
             trajectory.assign_colors_constant("#00FF00")
     if cav_exist_flag == False:
-        print(f"No CAV trajectory in {traj_file_path}")
+        print(f"Warning: No CAV trajectory in {traj_file_path}")
         return
     # Show the generated trajectory video
     fig, ax = plt.subplots()
@@ -63,18 +64,45 @@ if __name__ == "__main__":
     output_folder = "/app/output/trajectory_videos"
     data_folder = "/app/output/trajectory_data"
 
-    traj_files = sorted(
-        glob.glob(
-            os.path.join(data_folder, "mcity_av_challenge_results/raw_data/**/fcd.xml")
-        )
+    # Create the parser
+    parser = argparse.ArgumentParser(description="Visualize the trajectories.")
+
+    # Add the --path argument
+    parser.add_argument(
+        "--trajectory_path",
+        type=str,
+        help="Specify the trajectory path to visualize. If not specified, all trajectories will be visualized.",
     )
+
+    # Parse command line arguments
+    args = parser.parse_args()
+
+    # Call the main function with the parsed --path argument
+    if args.trajectory_path:
+        print("Only visualizing the specified trajectory...")
+        file_path = os.path.join("/app", args.trajectory_path, "fcd.xml")
+        if not os.path.exists(file_path):
+            traj_files = []
+        else:
+            traj_files = [file_path]
+    else:
+        print("Visualizing all trajectories...")
+        traj_files = sorted(
+            glob.glob(
+                os.path.join(
+                    data_folder, "mcity_av_challenge_results/raw_data/**/fcd.xml"
+                )
+            )
+        )
     if traj_files == []:
-        print("No trajectory files found")
+        print("Warning: No trajectory files found")
         exit()
     os.makedirs(output_folder, exist_ok=True)
     for f in tqdm(traj_files):
         if check_broken_fcd_xml(f):
-            print(f"Trajectory file {f} is broken")
+            print(
+                f"Warning: Trajectory file {f} is broken. It might be caused by the unexpected stop of the testing environment. Please check the file and rerun the test."
+            )
             continue
         make_video(net_file, f, output_folder)
     print("Done")

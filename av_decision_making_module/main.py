@@ -2,7 +2,9 @@ import json
 import numpy as np
 import time
 
-from mrav.mcity_mr_av import MRAVTemplateMcity
+from mrav.mcity_mr_av import (
+    MRAVTemplateMcity,
+)  # This Python class is a basic component for any developed AV decision-making module and the user should inherit from it.
 from terasim_com.utils.convertion import utm_to_sumo_coordinate
 
 
@@ -10,10 +12,9 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
     """This is an example AV decision making module that reads a logged trajectory from a file and follows it."""
 
     def initialize_av_algorithm(self):
+        """This function will be used to initialize the developed AV ddecision-making module. In this example, we read the predefined trajectory from a file."""
         trajectory = []
-        with open(
-            "/app/av_decision_making_module/baseline_av_trajectory.json", "r"
-        ) as f:
+        with open("/baseline_av_data/baseline_av_trajectory.json", "r") as f:
             for line in f:
                 trajectory.append(json.loads(line)["CAV"])
         self.trajectory = {
@@ -37,6 +38,7 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
         self.trajectory_index = 0
 
     def derive_planning_result(self, step_info):
+        """This function will be used to compute the planning results based on the observation from "step_info". In this example, we find the closest point in the predefined trajectory and return the next 20 points as the planned trajectory."""
         # parse the step_info
         av_state = step_info["av_info"]
         tls_info = step_info["tls_info"]
@@ -62,21 +64,16 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
         planning_result = {
             "timestamp": time.time(),
             "time_resolution": 0.1,
-            "x_vector": self.trajectory["x_vector"][
-                self.trajectory_index : self.trajectory_index + 20
-            ].tolist(),
-            "y_vector": self.trajectory["y_vector"][
-                self.trajectory_index : self.trajectory_index + 20
-            ].tolist(),
-            "vd_vector": self.trajectory["velocity_vector"][
-                self.trajectory_index : self.trajectory_index + 20
-            ].tolist(),
-            "ori_vector": self.trajectory["orientation_vector"][
-                self.trajectory_index : self.trajectory_index + 20
-            ].tolist(),
+            "next_x": self.trajectory["x_vector"][self.trajectory_index],
+            "next_y": self.trajectory["y_vector"][self.trajectory_index],
+            "next_speed": self.trajectory["velocity_vector"][self.trajectory_index],
+            "next_orientation": self.trajectory["orientation_vector"][
+                self.trajectory_index
+            ],
         }
         return planning_result
 
 
+# Create an instance of the AV decision-making module and run it
 av_decision_making_module = AVDecisionMakingModule()
 av_decision_making_module.run()
