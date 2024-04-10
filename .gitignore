@@ -1,1 +1,4 @@
-data
+test_data
+output
+*.log
+*.mp4
