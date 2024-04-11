@@ -1,10 +1,12 @@
 import boto3
 import os
 import argparse
+from botocore import UNSIGNED
+from botocore.config import Config
 
 session = boto3.session.Session()
 
-s3 = session.client("s3")
+s3 = session.client("s3", config=Config(signature_version=UNSIGNED))
 
 bucket_name = "mcity-safety-challenge"
 
@@ -15,13 +17,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "-r", "--round_number", help="Round number to download files from"
     )
-    parser.add_argument("-t", "--team_name", help="Unique team name")
+    parser.add_argument("-t", "--team_id", help="Unique team ID")
     args = parser.parse_args()
     round_number = args.round_number
-    team_name = args.team_name
+    team_id = args.team_id
 
     local_download_path = "./test_data/round" + round_number
-    prefix = team_name + "/" + "round" + round_number
+    prefix = team_id + "/" + "round" + round_number
 
     if not os.path.exists(local_download_path):
         os.makedirs(local_download_path)
