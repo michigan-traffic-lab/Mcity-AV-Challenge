@@ -487,14 +487,14 @@
     </edge>
     <edge id=":clusterJ0_NODE_3_1" function="internal">
         <lane id=":clusterJ0_NODE_3_1_0" index="0" speed="8.00" length="6.23" width="3.83" shape="154.55,129.64,271.65 154.79,135.86,271.80"/>
-        <lane id=":clusterJ0_NODE_3_1_1" index="1" speed="8.00" length="6.23" width="3.83" shape="150.72,129.80,271.65 150.96,136.02,271.80"/>
+        <lane id=":clusterJ0_NODE_3_1_1" index="1" speed="10.00" length="6.23" width="3.83" shape="150.72,129.80,271.65 150.96,136.02,271.80"/>
     </edge>
     <edge id=":clusterJ1_NODE_4_0" function="internal">
         <lane id=":clusterJ1_NODE_4_0_0" index="0" speed="7.50" length="10.27" width="4.20" shape="161.41,205.19,273.57 161.54,208.25,273.65 161.73,210.35,273.70 162.10,212.42,273.75 162.79,215.33,273.83"/>
     </edge>
     <edge id=":clusterJ1_NODE_4_1" function="internal">
         <lane id=":clusterJ1_NODE_4_1_0" index="0" speed="8.00" length="8.07" width="3.83" shape="157.58,205.34,273.57 157.92,213.40,273.59"/>
-        <lane id=":clusterJ1_NODE_4_1_1" index="1" speed="8.00" length="8.07" width="3.83" shape="153.75,205.49,273.57 154.09,213.56,273.59"/>
+        <lane id=":clusterJ1_NODE_4_1_1" index="1" speed="10.00" length="8.07" width="3.83" shape="153.75,205.49,273.57 154.09,213.56,273.59"/>
     </edge>
     <edge id=":nd_10_2_1_0" function="internal">
         <lane id=":nd_10_2_1_0_0" index="0" speed="5.00" length="3.69" width="3.49" shape="73.48,271.42,273.98 73.88,272.43,274.07 74.22,273.10,274.14 74.68,273.69,274.21 75.42,274.49,274.30"/>
