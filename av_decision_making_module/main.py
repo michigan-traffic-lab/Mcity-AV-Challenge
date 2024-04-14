@@ -38,7 +38,7 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
         self.trajectory_index = 0
 
     def derive_planning_result(self, step_info):
-        """This function will be used to compute the planning results based on the observation from "step_info". In this example, we find the closest point in the predefined trajectory and return the next 20 points as the planned trajectory."""
+        """This function will be used to compute the planning results based on the observation from "step_info". In this example, we find the closest point in the predefined trajectory and return the next waypoint as the planning results."""
         # parse the step_info
         av_state = step_info["av_info"]
         tls_info = step_info["tls_info"]
