@@ -8,7 +8,7 @@ session = boto3.session.Session()
 
 s3 = session.client("s3", config=Config(signature_version=UNSIGNED))
 
-bucket_name = "mcity-safety-challenge"
+bucket_name = "mcity-safety-challenge-users"
 
 
 if __name__ == "__main__":
