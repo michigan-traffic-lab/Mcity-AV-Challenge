@@ -1,4 +1,5 @@
-import json
+import csv
+import math
 import numpy as np
 import time
 
@@ -14,26 +15,28 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
     def initialize_av_algorithm(self):
         """This function will be used to initialize the developed AV ddecision-making module. In this example, we read the predefined trajectory from a file."""
         trajectory = []
-        with open("/baseline_av_data/baseline_av_trajectory.json", "r") as f:
-            for line in f:
-                trajectory.append(json.loads(line)["CAV"])
+        with open("/baseline_av_data/baseline_av_trajectory.csv", "r") as f:
+            reader = csv.reader(f)
+            trajectory = []
+            for row in reader:
+                orientation = float(row[3])
+                if orientation > math.pi:
+                    orientation -= 2 * math.pi
+                trajectory.append(
+                    {
+                        "x": float(row[1]),
+                        "y": float(row[2]),
+                        "orientation": orientation,
+                        "velocity": float(row[4]),
+                    }
+                )
         self.trajectory = {
-            "x_vector": np.array(
-                [
-                    utm_to_sumo_coordinate([point["x"], point["y"]])[0]
-                    for point in trajectory
-                ]
-            ),
-            "y_vector": np.array(
-                [
-                    utm_to_sumo_coordinate([point["x"], point["y"]])[1]
-                    for point in trajectory
-                ]
-            ),
+            "x_vector": np.array([point["x"] for point in trajectory]),
+            "y_vector": np.array([point["y"] for point in trajectory]),
             "orientation_vector": np.array(
                 [point["orientation"] for point in trajectory]
             ),
-            "velocity_vector": np.array([point["speed_long"] for point in trajectory]),
+            "velocity_vector": np.array([point["velocity"] for point in trajectory]),
         }
         self.trajectory_index = 0
 
@@ -46,21 +49,15 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
         # find the closest point in the predefined trajectory
         current_x = av_state["x"]
         current_y = av_state["y"]
-        x_vector = self.trajectory["x_vector"]
-        y_vector = self.trajectory["y_vector"]
-        distance = np.sqrt((x_vector - current_x) ** 2 + (y_vector - current_y) ** 2)
-        closest_point_index = np.argmin(distance)
-        self.trajectory_index = (
-            closest_point_index
-            if closest_point_index > self.trajectory_index
-            else self.trajectory_index + 1
-        )
-        print("current AV position: ", current_x, current_y)
-        print(
-            "next AV position: ",
-            x_vector[self.trajectory_index],
-            y_vector[self.trajectory_index],
-        )
+        if self.trajectory_index > len(self.trajectory["x_vector"]) - 1:
+            next_x = self.trajectory["x_vector"][-1]
+            next_y = self.trajectory["y_vector"][-1]
+        else:
+            next_x = self.trajectory["x_vector"][self.trajectory_index]
+            next_y = self.trajectory["y_vector"][self.trajectory_index]
+
+        print("current AV position:", current_x, current_y)
+        print("next AV position:", next_x, next_y)
         planning_result = {
             "timestamp": time.time(),
             "time_resolution": 0.1,
@@ -71,6 +68,7 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
                 self.trajectory_index
             ],
         }
+        self.trajectory_index += 1
         return planning_result
 
 
