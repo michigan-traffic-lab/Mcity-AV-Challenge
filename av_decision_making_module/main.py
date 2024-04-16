@@ -6,7 +6,6 @@ import time
 from mrav.mcity_mr_av import (
     MRAVTemplateMcity,
 )  # This Python class is a basic component for any developed AV decision-making module and the user should inherit from it.
-from terasim_com.utils.convertion import utm_to_sumo_coordinate
 
 
 class AVDecisionMakingModule(MRAVTemplateMcity):
