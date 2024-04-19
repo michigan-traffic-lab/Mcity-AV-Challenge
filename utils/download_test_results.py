@@ -19,7 +19,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-t", "--team_id", help="Unique team ID")
     parser.add_argument(
-        "-k", "--unique_key", help="Unique key for the file to download"
+        "-k", "--unique_key", help="Unique key for the file to download", default=""
     )
     args = parser.parse_args()
     round_number = args.round_number
@@ -27,7 +27,10 @@ if __name__ == "__main__":
     unique_key = args.unique_key
 
     local_download_path = "./test_data/round" + round_number
-    prefix = team_id + "_" + unique_key + "/" + "round" + round_number
+    if unique_key:
+        prefix = team_id + "_" + unique_key + "/" + "round" + round_number
+    else:
+        prefix = team_id + "/" + "round" + round_number
 
     if not os.path.exists(local_download_path):
         os.makedirs(local_download_path)
