@@ -1,11 +1,11 @@
-import json
+import csv
+import math
 import numpy as np
 import time
 import scipy.integrate as spi
 from mrav.mcity_mr_av import (
     MRAVTemplateMcity,
 )  # This Python class is a basic component for any developed AV decision-making module and the user should inherit from it.
-from terasim_com.utils.convertion import utm_to_sumo_coordinate
 
 
 class AVDecisionMakingModule(MRAVTemplateMcity):
@@ -14,26 +14,28 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
     def initialize_av_algorithm(self):
         """This function will be used to initialize the developed AV ddecision-making module. In this example, we read the predefined trajectory from a file."""
         trajectory = []
-        with open("/baseline_av_data/baseline_av_trajectory.json", "r") as f:
-            for line in f:
-                trajectory.append(json.loads(line)["CAV"])
+        with open("/baseline_av_data/baseline_av_trajectory.csv", "r") as f:
+            reader = csv.reader(f)
+            trajectory = []
+            for row in reader:
+                orientation = float(row[3])
+                if orientation > math.pi:
+                    orientation -= 2 * math.pi
+                trajectory.append(
+                    {
+                        "x": float(row[1]),
+                        "y": float(row[2]),
+                        "orientation": orientation,
+                        "velocity": float(row[4]),
+                    }
+                )
         self.trajectory = {
-            "x_vector": np.array(
-                [
-                    utm_to_sumo_coordinate([point["x"], point["y"]])[0]
-                    for point in trajectory
-                ]
-            ),
-            "y_vector": np.array(
-                [
-                    utm_to_sumo_coordinate([point["x"], point["y"]])[1]
-                    for point in trajectory
-                ]
-            ),
+            "x_vector": np.array([point["x"] for point in trajectory]),
+            "y_vector": np.array([point["y"] for point in trajectory]),
             "orientation_vector": np.array(
                 [point["orientation"] for point in trajectory]
             ),
-            "velocity_vector": np.array([point["speed_long"] for point in trajectory]),
+            "velocity_vector": np.array([point["velocity"] for point in trajectory]),
         }
         self.trajectory_index = 0
         # IDM model parameters
@@ -49,6 +51,7 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
         self.conf_dist = 5  # conflict distance
 
     def derive_planning_result(self, step_info):
+
         t = np.linspace(0, 0.2, 2)
         next_state = self.fsys(step_info, t)
 
@@ -69,6 +72,20 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
 
         print("next AV position: ", next_x, next_y, next_velocity)
 
+        """This function will be used to compute the planning results based on the observation from "step_info". In this example, we find the closest point in the predefined trajectory and return the next waypoint as the planning results."""
+        # parse the step_inf
+        # find the closest point in the predefined trajectory
+        current_x = av_state["x"]
+        current_y = av_state["y"]
+        if self.trajectory_index > len(self.trajectory["x_vector"]) - 1:
+            next_x = self.trajectory["x_vector"][-1]
+            next_y = self.trajectory["y_vector"][-1]
+        else:
+            next_x = self.trajectory["x_vector"][self.trajectory_index]
+            next_y = self.trajectory["y_vector"][self.trajectory_index]
+
+        print("current AV position:", current_x, current_y)
+        print("next AV position:", next_x, next_y)
         planning_result = {
             "timestamp": time.time(),
             "time_resolution": 0.1,
@@ -77,7 +94,6 @@ class AVDecisionMakingModule(MRAVTemplateMcity):
             "next_speed": next_velocity,
             "next_orientation": next_orientation,
         }
-
         return planning_result
 
 
