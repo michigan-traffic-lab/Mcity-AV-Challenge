@@ -12,6 +12,4 @@ Michigan Traffic Lab
 Mcity
 
 ## Contact
-Michigan Traffic Lab
-
-Mcity
+Should you face any challenges while submitting or need assistance with navigating the simulation environment, please open an issue on our GitHub repository.
