@@ -7,7 +7,7 @@ services:
     restart: always
     networks:
       - terasim-bridge
-    image: "michigantrafficlab/mcity_av_challenge:test_env_a"
+    image: "michigantrafficlab/mcity_av_challenge:env_release"
     volumes:
       - ./output/trajectory_data:/app/Driving-Intelligence-Test/output
     ports:
